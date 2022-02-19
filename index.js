@@ -3,15 +3,22 @@ const fetch = require("node-fetch");
 const express = require("express");
 const app = express();
 const apiKey = process.env.API_KEY;
-app.listen(3000);
+app.listen(4000);
 
-app.post("/:location", async (req, res) => {
+app.get("/:location", async (req, res) => {
   const { location } = req.params;
   //   getLocation(location);
   const coord = await getLocation(location);
   const quality = await getQuality(coord);
   res.send(quality);
 });
+
+app.get('/coordinates/lat=:lat&lon=:lon', async (req, res) => {
+  const { lat, lon } = req.params;
+  const locationByCoord = await getLocationByCoord(lat, lon);
+  const quality = await getQuality({lat, lon})
+  res.send({locationByCoord, quality})
+})
 
 async function getLocation(loc) {
   try {
@@ -36,6 +43,18 @@ async function getLocation(loc) {
       };
       return coord
     }
+  }
+}
+
+async function getLocationByCoord(lat, lon) {
+  try {
+    const response = await fetch(`http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${apiKey}`)
+    const body = await response.json();
+    const data = {"name": body[0].name, "country": body[0].country};
+    console.log(data);
+    return data
+  } catch (e) {
+    console.log(e)
   }
 }
 
