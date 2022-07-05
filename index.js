@@ -64,7 +64,7 @@ async function getQuality(loc) {
       `http://api.openweathermap.org/data/2.5/air_pollution?lat=${loc.lat}&lon=${loc.lon}&appid=${apiKey}`
     );
     const body = await response.json();
-    const data = { airQuality: body.list[0].components, location: loc };
+    const data = { airQuality: body.list[0].components, index: body.list[0].main.aqi, location: loc };
     return data;
   } catch (e) {
     const data = { airQuality: "no data - check location", location: loc };
