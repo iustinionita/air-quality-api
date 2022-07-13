@@ -1,9 +1,10 @@
 require("dotenv").config();
 const fetch = require("node-fetch");
+const cors = require("cors");
 const express = require("express");
 const app = express();
 const apiKey = process.env.API_KEY;
-app.listen(4000);
+app.use(cors()).listen(4000);
 
 app.get("/:location", async (req, res) => {
   const { location } = req.params;
